@@ -5,9 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Humans 2.0 Engine</title>
   
-  <!-- Tailwind CSS & Chart.js CDN -->
+  <!-- Tailwind CSS, Chart.js & Telegram WebApp SDK -->
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
 
   <script>
     tailwind.config = {
@@ -34,7 +35,6 @@
       background-color: #07090E;
       color: #E2E8F0;
       font-family: system-ui, -apple-system, sans-serif;
-      /* Технологічна стіна */
       background-image: 
         radial-gradient(circle at 50% 0%, rgba(157, 0, 255, 0.12), transparent 60%),
         radial-gradient(circle at 85% 100%, rgba(0, 229, 255, 0.08), transparent 50%),
@@ -84,7 +84,7 @@
       backdrop-filter: blur(16px);
     }
 
-    /* Ультрасучасна та компактна Heatmap стилізація */
+    /* Heatmap */
     .hm-cell {
       transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
       position: relative;
@@ -135,17 +135,35 @@
           <p class="text-xs text-gray-400 mt-0.5">Обчислювальний движок з обліком чистого прибутку та аналізом часу</p>
         </div>
       </div>
-      <div class="flex gap-2 items-center">
-        <div class="text-right mr-3 hidden sm:block">
-          <p class="text-[10px] text-gray-400">Поточний час системи:</p>
+
+      <!-- User Selector, Variety & Cost Controls -->
+      <div class="flex flex-wrap gap-3 items-center">
+        <!-- Telegram User Info Badge -->
+        <div id="tgUserBadge" class="flex items-center gap-2 bg-brandDark px-3 py-1.5 rounded-xl border border-neonBlue/40 text-xs">
+          <span class="w-2 h-2 rounded-full bg-neonBlue animate-pulse"></span>
+          <span id="tgUserName" class="font-bold text-neonBlue">Telegram Auth</span>
+          <button onclick="loginWithTelegramPrompt()" class="text-[10px] text-gray-400 hover:text-white underline ml-1">Змінити</button>
+        </div>
+
+        <!-- Selector сорта та собівартості за 100г -->
+        <div class="flex items-center gap-2 bg-brandDark px-3 py-1.5 rounded-xl border border-brandBorder">
+          <span class="text-xs text-gray-400 font-bold">Сорт:</span>
+          <select id="varietySelect" onchange="onVarietyChange(this.value)" class="bg-transparent text-xs text-neonGreen font-bold focus:outline-none cursor-pointer">
+            <option value="BANNAN" class="bg-brandDark text-white">BANNAN</option>
+            <option value="SKITTLES" class="bg-brandDark text-white">SKITTLES</option>
+            <option value="NEW" class="bg-brandDark text-white">+ Інший сорт</option>
+          </select>
+
+          <span class="text-xs text-gray-500 font-bold">|</span>
+
+          <span class="text-xs text-gray-400 font-bold">Закупка 100г (€):</span>
+          <input type="number" id="costPer100gInput" onchange="updateVarietyCost(this.value)" class="w-16 bg-brandCard border border-brandBorder rounded px-1.5 py-0.5 text-xs text-white font-mono focus:outline-none focus:border-neonGreen" value="600" step="1" />
+        </div>
+
+        <div class="text-right mr-1 hidden sm:block">
+          <p class="text-[10px] text-gray-400">Час системи:</p>
           <p id="liveClock" class="text-xs font-mono font-bold text-neonBlue">--:--:--</p>
         </div>
-        <button onclick="loadSampleData()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-brandBorder hover:bg-gray-800 text-neonGreen border border-neonGreen/30 transition shadow-sm">
-          Завантажити приклад
-        </button>
-        <button onclick="clearAllData()" class="px-4 py-2 text-xs font-semibold rounded-xl bg-brandBorder hover:bg-red-900/30 text-red-400 border border-red-500/30 transition shadow-sm">
-          Очистити
-        </button>
       </div>
     </header>
 
@@ -164,9 +182,14 @@
           
           <textarea id="rawInput" class="w-full h-60 p-2.5 bg-brandDark/90 rounded-xl border border-brandBorder text-xs font-mono text-gray-200 focus:outline-none focus:border-neonGreen/50 transition resize-none leading-relaxed" placeholder="Вставити журнал угод..."></textarea>
 
-          <button onclick="processData()" class="w-full py-2.5 bg-gradient-to-r from-neonGreen to-emerald-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-neonGreen/20 hover:opacity-95 transition">
-            Розрахувати (Humans2.0)
-          </button>
+          <div class="grid grid-cols-3 gap-2">
+            <button onclick="processData()" class="col-span-2 py-2.5 bg-gradient-to-r from-neonGreen to-emerald-400 text-black font-bold text-xs rounded-xl shadow-lg shadow-neonGreen/20 hover:opacity-95 transition">
+              Оновити / Розрахувати
+            </button>
+            <button onclick="clearInputField()" class="col-span-1 py-2.5 bg-brandBorder hover:bg-red-900/30 text-red-400 border border-red-500/30 font-semibold text-xs rounded-xl transition shadow-sm">
+              Очистити
+            </button>
+          </div>
         </div>
 
         <!-- CATEGORY "МОЇ" -->
@@ -195,7 +218,10 @@
           </div>
 
           <div class="pt-1">
-            <p class="text-[10px] font-bold uppercase text-gray-400 mb-1.5">Історія операцій:</p>
+            <div class="flex justify-between items-center mb-1.5">
+              <p class="text-[10px] font-bold uppercase text-gray-400">Загальні розходи ("МОЇ"):</p>
+              <span id="monthlyExpensesTotal" class="text-[11px] font-bold text-red-400">0 €</span>
+            </div>
             <div id="myExpensesList" class="space-y-1.5 max-h-28 overflow-y-auto text-xs pr-1">
               <p class="text-gray-500 text-[11px]">Записи відсутні</p>
             </div>
@@ -208,17 +234,21 @@
       <div class="lg:col-span-3 space-y-6">
 
         <!-- KPIs -->
-        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2.5">
+        <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-2.5">
           <div class="bg-brandCard/90 p-3 rounded-xl neon-border">
             <p class="text-[10px] font-medium text-gray-400">Фактично отримано</p>
             <p class="text-sm sm:text-base font-black text-white mt-1" id="kpiRevenue">0 €</p>
+          </div>
+          <div class="bg-brandCard/90 p-3 rounded-xl neon-border">
+            <p class="text-[10px] font-medium text-neonGreen">Очікувана виручка</p>
+            <p class="text-sm sm:text-base font-black text-neonGreen mt-1" id="kpiExpectedRevenue">0 €</p>
           </div>
           <div class="bg-brandCard/90 p-3 rounded-xl neon-border-blue">
             <p class="text-[10px] font-medium text-neonBlue">Чистий прибуток</p>
             <p class="text-sm sm:text-base font-black text-neonBlue mt-1" id="kpiNetProfit">0 €</p>
           </div>
           <div class="bg-brandCard/90 p-3 rounded-xl neon-border">
-            <p class="text-[10px] font-medium text-gray-400">Собівартість</p>
+            <p class="text-[10px] font-medium text-gray-400">Собівартість грамів</p>
             <p class="text-sm sm:text-base font-black text-neonRed mt-1" id="kpiCostOfGoods">0 €</p>
           </div>
           <div class="bg-brandCard/90 p-3 rounded-xl neon-border">
@@ -272,10 +302,8 @@
           </div>
         </div>
 
-        <!-- ULTRA-COMPACT MODERN TECH HEATMAP -->
+        <!-- HEATMAP -->
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border space-y-3">
-          
-          <!-- Heatmap Navigation Header -->
           <div class="flex flex-col sm:flex-row justify-between items-center gap-2 border-b border-brandBorder/80 pb-2.5">
             <div class="flex items-center gap-2">
               <span class="w-2 h-2 rounded-full bg-neonGreen animate-pulse"></span>
@@ -285,7 +313,6 @@
               <span class="text-[10px] text-gray-400 font-mono bg-brandDark px-2 py-0.5 rounded border border-brandBorder" id="heatmapPeriodText">--.-- - --.--</span>
             </div>
 
-            <!-- Compact Date Navigation -->
             <div class="flex items-center gap-1.5">
               <button onclick="shiftWeek(-1)" class="px-2 py-0.5 text-[10px] font-mono bg-brandDark hover:bg-brandBorder text-gray-300 rounded border border-brandBorder transition">←</button>
               <button onclick="resetToCurrentWeek()" class="px-2.5 py-0.5 text-[10px] font-semibold bg-neonGreen/10 text-neonGreen hover:bg-neonGreen/20 rounded border border-neonGreen/30 transition">Сьогодні</button>
@@ -294,11 +321,8 @@
             </div>
           </div>
 
-          <!-- Heatmap Grid Body -->
           <div class="overflow-x-auto">
             <div class="min-w-[680px]">
-              
-              <!-- Timeline Scale (00 - 23 Compact Markers) -->
               <div class="grid grid-cols-[60px_repeat(24,1fr)] gap-1 mb-1 text-[9px] font-mono text-gray-500">
                 <div></div>
                 <div class="col-span-6 text-left pl-0.5">00:00</div>
@@ -307,23 +331,18 @@
                 <div class="col-span-6 text-left pl-0.5">18:00</div>
               </div>
 
-              <!-- Compact Day Rows Grid -->
-              <div id="heatmapGridRows" class="space-y-1">
-                <!-- Rendered dynamically -->
-              </div>
-
+              <div id="heatmapGridRows" class="space-y-1"></div>
             </div>
           </div>
 
-          <!-- Ultra Compact Legend -->
           <div class="flex items-center justify-between text-[10px] text-gray-400 pt-1.5 border-t border-brandBorder/40">
             <div class="flex items-center gap-2">
               <span class="text-gray-500">Інтенсивність:</span>
               <div class="flex items-center gap-1">
-                <span class="w-2.5 h-2.5 rounded-sm bg-[#0D111A] border border-brandBorder inline-block" title="0 угод"></span>
-                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-950/80 border border-emerald-800/40 inline-block" title="1-2 угоди"></span>
-                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500/80 border border-emerald-400 inline-block" title="Середнє"></span>
-                <span class="w-2.5 h-2.5 rounded-sm bg-neonGreen shadow-[0_0_6px_#00FF88] inline-block" title="Максимум"></span>
+                <span class="w-2.5 h-2.5 rounded-sm bg-[#0D111A] border border-brandBorder inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-950/80 border border-emerald-800/40 inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-sm bg-emerald-500/80 border border-emerald-400 inline-block"></span>
+                <span class="w-2.5 h-2.5 rounded-sm bg-neonGreen shadow-[0_0_6px_#00FF88] inline-block"></span>
               </div>
             </div>
             <div class="flex items-center gap-1.5">
@@ -357,8 +376,11 @@
               <th class="p-3">Base_Gramm</th>
               <th class="p-3 text-neonGreen">Exact_Gramm (* 1.1)</th>
               <th class="p-3">EUR_Paid</th>
+              <th class="p-3 text-neonRed">Собівартість (€)</th>
+              <th class="p-3 text-neonBlue">Чистий з угоди</th>
               <th class="p-3">Запис боргу</th>
               <th class="p-3">Час</th>
+              <th class="p-3 text-center">Дії</th>
             </tr>
           </thead>
           <tbody id="recordsTableBody" class="divide-y divide-brandBorder"></tbody>
@@ -370,11 +392,99 @@
 
   <script>
     let barChart, pieChart;
+    let currentUser = 'default_tg';
+    let telegramUser = null;
     let myExpenses = [];
+    let storedRecordsMap = {};
     let parsedRecordsGlobal = [];
 
-    // Змінна стану обраного тижня для Heatmap
     let selectedWeekStart = getMonday(new Date());
+
+    // Базова закупка за 100г
+    const COST_PER_100G = {
+      'BANNAN': 600,   // 600€ за 100г => 1г = 6.00€
+      'SKITTLES': 660  // 660€ за 100г => 1г = 6.60€
+    };
+
+    function initTelegramAuth() {
+      if (window.Telegram && window.Telegram.WebApp) {
+        const tg = window.Telegram.WebApp;
+        tg.ready();
+        tg.expand();
+
+        if (tg.initDataUnsafe && tg.initDataUnsafe.user) {
+          telegramUser = tg.initDataUnsafe.user;
+          currentUser = `tg_${telegramUser.id}`;
+          updateTgBadgeUI(`${telegramUser.first_name || ''} (@${telegramUser.username || telegramUser.id})`);
+        } else {
+          const savedTgUser = localStorage.getItem('h2_tg_user_session');
+          if (savedTgUser) {
+            telegramUser = JSON.parse(savedTgUser);
+            currentUser = `tg_${telegramUser.id}`;
+            updateTgBadgeUI(`${telegramUser.name} (@${telegramUser.id})`);
+          } else {
+            loginWithTelegramPrompt();
+          }
+        }
+      } else {
+        loginWithTelegramPrompt();
+      }
+    }
+
+    function loginWithTelegramPrompt() {
+      const username = prompt('Введіть ваш Telegram Username або ID:', 'Alesha_TG');
+      if (username) {
+        const cleanName = username.replace('@', '').trim();
+        telegramUser = { id: cleanName, name: cleanName };
+        currentUser = `tg_${cleanName}`;
+        localStorage.setItem('h2_tg_user_session', JSON.stringify(telegramUser));
+        updateTgBadgeUI(`@${cleanName}`);
+        loadUserData();
+        processData();
+      } else {
+        updateTgBadgeUI('Гість (default)');
+      }
+    }
+
+    function updateTgBadgeUI(text) {
+      const badgeElem = document.getElementById('tgUserName');
+      if (badgeElem) badgeElem.innerText = text;
+    }
+
+    function onVarietyChange(variety) {
+      if (variety === 'NEW') {
+        const newVarietyName = prompt('Введіть назву нового сорту:');
+        if (newVarietyName) {
+          const upperName = newVarietyName.trim().toUpperCase();
+          COST_PER_100G[upperName] = 500;
+          
+          const select = document.getElementById('varietySelect');
+          const option = document.createElement('option');
+          option.value = upperName;
+          option.text = upperName;
+          option.className = "bg-brandDark text-white";
+          select.add(option, select.options[select.options.length - 1]);
+          select.value = upperName;
+          variety = upperName;
+        } else {
+          document.getElementById('varietySelect').value = 'BANNAN';
+          variety = 'BANNAN';
+        }
+      }
+      
+      const costInput = document.getElementById('costPer100gInput');
+      costInput.value = (COST_PER_100G[variety] || 0).toFixed(0);
+      processData();
+    }
+
+    function updateVarietyCost(value) {
+      const variety = document.getElementById('varietySelect').value;
+      const numVal = parseFloat(value);
+      if (!isNaN(numVal) && numVal >= 0) {
+        COST_PER_100G[variety] = numVal;
+        processData();
+      }
+    }
 
     function getMonday(d) {
       const date = new Date(d);
@@ -396,11 +506,6 @@
     setInterval(updateClock, 1000);
     updateClock();
 
-    const COST_PER_EXACT_GRAM = {
-      'BANNAN': 600 / 110,
-      'SKITTLES': 660 / 110
-    };
-
     const COLOR_PALETTE = [
       { bg: 'rgba(255, 215, 0, 0.15)', border: '#FFD700', text: '#FFD700' },
       { bg: 'rgba(0, 229, 255, 0.15)', border: '#00E5FF', text: '#00E5FF' },
@@ -421,6 +526,23 @@
       return categoryColorMap[upper];
     }
 
+    function loadUserData() {
+      const savedExpenses = localStorage.getItem(`h2_my_expenses_${currentUser}`);
+      myExpenses = savedExpenses ? JSON.parse(savedExpenses) : [];
+
+      const savedRecords = localStorage.getItem(`h2_records_${currentUser}`);
+      storedRecordsMap = savedRecords ? JSON.parse(savedRecords) : {};
+
+      const savedRaw = localStorage.getItem(`h2_raw_logs_${currentUser}`);
+      document.getElementById('rawInput').value = savedRaw || '';
+    }
+
+    function saveUserData() {
+      localStorage.setItem(`h2_my_expenses_${currentUser}`, JSON.stringify(myExpenses));
+      localStorage.setItem(`h2_records_${currentUser}`, JSON.stringify(storedRecordsMap));
+      localStorage.setItem(`h2_raw_logs_${currentUser}`, document.getElementById('rawInput').value);
+    }
+
     function addMyExpense(type) {
       const noteInput = document.getElementById('myExpenseNote');
       const amountInput = document.getElementById('myExpenseAmount');
@@ -436,42 +558,39 @@
         amount = Math.abs(amount);
       }
 
+      const now = new Date();
       myExpenses.push({
         id: Date.now(),
         note,
         amount,
-        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        dateIso: now.toISOString()
       });
 
       noteInput.value = '';
       amountInput.value = '';
 
-      saveMyExpenses();
+      saveUserData();
       processData();
     }
 
     function removeMyExpense(id) {
       myExpenses = myExpenses.filter(item => item.id !== id);
-      saveMyExpenses();
+      saveUserData();
       processData();
     }
 
-    function saveMyExpenses() {
-      localStorage.setItem('h2_my_expenses', JSON.stringify(myExpenses));
+    function removeRecord(id) {
+      delete storedRecordsMap[id];
+      saveUserData();
+      processData();
     }
 
-    function loadMyExpenses() {
-      const saved = localStorage.getItem('h2_my_expenses');
-      if (saved) {
-        try { myExpenses = JSON.parse(saved); } catch(e) { myExpenses = []; }
-      }
-    }
-
-    function clearAllData() {
-      localStorage.removeItem('h2_raw_logs');
-      localStorage.removeItem('h2_my_expenses');
+    function clearInputField() {
       document.getElementById('rawInput').value = '';
-      myExpenses = [];
+      storedRecordsMap = {};
+      localStorage.removeItem(`h2_raw_logs_${currentUser}`);
+      localStorage.removeItem(`h2_records_${currentUser}`);
       processData();
     }
 
@@ -528,6 +647,7 @@
       if (!rawText) return [];
       const lines = rawText.split('\n').map(l => l.trim()).filter(l => l !== '');
       let currentCategory = 'UNCATEGORIZED';
+      let currentDatePrefix = '';
       const records = [];
       const techHeaders = ['name', 'gramm', '€', 'time'];
 
@@ -540,7 +660,12 @@
             lines[i+2].toLowerCase() === 'gramm' && 
             lines[i+3] === '€') {
           currentCategory = line.toUpperCase();
-          i += 5;
+          if (i + 4 < lines.length && (lines[i+4].includes('.') || lines[i+4].includes('/'))) {
+            currentDatePrefix = lines[i+4];
+            i += 5;
+          } else {
+            i += 4;
+          }
           continue;
         }
 
@@ -559,10 +684,12 @@
             const baseGramm = parseWeight(rawGramm);
             const exactGramm = baseGramm * 1.1;
             const moneyData = parseMoneyAndDebt(rawMoney);
+            const fullTimeStr = (currentDatePrefix && !timeStr.includes('.')) ? `${currentDatePrefix} ${timeStr}` : timeStr;
 
-            const parsedDateObj = parseRecordDateTime(timeStr);
+            const uniqueId = `${currentCategory}_${clientName}_${fullTimeStr}`.replace(/\s+/g, '');
 
             records.push({
+              id: uniqueId,
               category: currentCategory,
               clientName,
               rawGramm,
@@ -573,8 +700,7 @@
               debtNew: moneyData.debtNew,
               debtRepaid: moneyData.debtRepaid,
               rawDebtText: moneyData.rawDebtText,
-              timeStr,
-              parsedDateObj
+              timeStr: fullTimeStr
             });
 
             i += 4;
@@ -615,56 +741,88 @@
 
     function processData() {
       const rawText = document.getElementById('rawInput').value;
-      localStorage.setItem('h2_raw_logs', rawText);
+      const newlyParsed = parseLogs(rawText);
 
-      parsedRecordsGlobal = parseLogs(rawText);
+      newlyParsed.forEach(rec => {
+        if (!storedRecordsMap[rec.id]) {
+          storedRecordsMap[rec.id] = rec;
+        }
+      });
+
+      saveUserData();
+
+      parsedRecordsGlobal = Object.values(storedRecordsMap).map(r => ({
+        ...r,
+        parsedDateObj: parseRecordDateTime(r.timeStr)
+      }));
 
       let totalEURPaid = 0;
+      let totalExpectedRevenue = 0;
       let totalBaseGramm = 0;
       let totalExactGramm = 0;
+      let totalCostOfGoods = 0;
+      let totalDealsNetProfit = 0;
 
       const clientNewDebts = {};
       const clientRepaidDebts = {};
       const categories = {};
 
       parsedRecordsGlobal.forEach(r => {
+        const costPer100g = COST_PER_100G[r.category] || 600; 
+        const costPerGram = costPer100g / 100;
+        
+        // 1. Собівартість = Точна вага (*1.1) * вартість за 1г
+        r.dealCost = r.exactGramm * costPerGram; 
+        
+        // 2. Розрахункова (очікувана) вартість продажу = Base_Gramm * 10 €/г
+        const estimatedRevenue = r.baseGramm * 10;
+        r.estimatedRevenue = estimatedRevenue;
+
+        // 3. Чистий прибуток від угоди = Розрахункова вартість продажу - Собівартість
+        r.dealProfit = estimatedRevenue - r.dealCost; 
+
         totalEURPaid += r.eurPaid;
+        totalExpectedRevenue += estimatedRevenue;
         totalBaseGramm += r.baseGramm;
         totalExactGramm += r.exactGramm;
+        totalCostOfGoods += r.dealCost;
+        totalDealsNetProfit += r.dealProfit;
 
         if (r.debtNew > 0) clientNewDebts[r.clientName] = (clientNewDebts[r.clientName] || 0) + r.debtNew;
         if (r.debtRepaid > 0) clientRepaidDebts[r.clientName] = (clientRepaidDebts[r.clientName] || 0) + r.debtRepaid;
 
         if (!categories[r.category]) {
-          categories[r.category] = { deals: 0, baseGramm: 0, exactGramm: 0, eurPaid: 0, costOfGoods: 0, netProfit: 0 };
+          categories[r.category] = { deals: 0, baseGramm: 0, exactGramm: 0, eurPaid: 0, expectedRevenue: 0, costOfGoods: 0, netProfit: 0 };
         }
 
         categories[r.category].deals += 1;
         categories[r.category].baseGramm += r.baseGramm;
         categories[r.category].exactGramm += r.exactGramm;
         categories[r.category].eurPaid += r.eurPaid;
+        categories[r.category].expectedRevenue += estimatedRevenue;
+        categories[r.category].costOfGoods += r.dealCost;
+        categories[r.category].netProfit += r.dealProfit;
       });
 
-      let totalCostOfGoods = 0;
-      let totalNetProfit = 0;
+      // --- Обрахунок блоку "МОЇ" ---
+      let myExpensesNet = 0;
+      let totalMyExpensesSub = 0;
 
-      Object.keys(categories).forEach(catName => {
-        const cat = categories[catName];
-        const unitCost = COST_PER_EXACT_GRAM[catName] || 0;
-        cat.costOfGoods = cat.exactGramm * unitCost;
-        cat.netProfit = cat.eurPaid - cat.costOfGoods;
-        totalCostOfGoods += cat.costOfGoods;
-        totalNetProfit += cat.netProfit;
+      myExpenses.forEach(item => {
+        myExpensesNet += item.amount;
+        if (item.amount < 0) {
+          totalMyExpensesSub += Math.abs(item.amount);
+        }
       });
 
-      let myTotalSum = 0;
-      myExpenses.forEach(item => { myTotalSum += item.amount; });
+      // Фактично отримано з урахуванням розходів (мінусуємо розходи за допомогою додавання від'ємного чи прямого віднімання)
+      const actualRevenueWithExpenses = totalEURPaid - totalMyExpensesSub;
 
-      totalEURPaid += myTotalSum;
-      totalNetProfit += myTotalSum;
+      // Формула: Чистий прибуток (загальний) = (Прибуток угод) - МОЇ (розходи) + МОЇ (доходи)
+      const totalNetProfit = totalDealsNetProfit + myExpensesNet;
 
       if (myExpenses.length > 0) {
-        categories['МОЇ'] = { deals: myExpenses.length, baseGramm: 0, exactGramm: 0, eurPaid: myTotalSum, costOfGoods: 0, netProfit: myTotalSum };
+        categories['МОЇ'] = { deals: myExpenses.length, baseGramm: 0, exactGramm: 0, eurPaid: myExpensesNet, expectedRevenue: myExpensesNet, costOfGoods: 0, netProfit: myExpensesNet };
       }
 
       let totalActiveDebt = 0;
@@ -678,7 +836,9 @@
         }
       });
 
-      document.getElementById('kpiRevenue').innerText = `${totalEURPaid.toFixed(2)} €`;
+      // Вивід Фактично отриманого з урахуванням розходів
+      document.getElementById('kpiRevenue').innerText = `${actualRevenueWithExpenses.toFixed(2)} €`;
+      document.getElementById('kpiExpectedRevenue').innerText = `${totalExpectedRevenue.toFixed(2)} €`;
       document.getElementById('kpiNetProfit').innerText = `${totalNetProfit.toFixed(2)} €`;
       document.getElementById('kpiCostOfGoods').innerText = `${totalCostOfGoods.toFixed(2)} €`;
       document.getElementById('kpiActiveDebt').innerText = `${totalActiveDebt.toFixed(0)} €`;
@@ -686,19 +846,19 @@
       document.getElementById('kpiExactWeight').innerText = `${totalExactGramm.toFixed(2)} г`;
       document.getElementById('kpiDeals').innerText = parsedRecordsGlobal.length;
 
-      renderMyExpensesUI(myTotalSum);
+      renderMyExpensesUI(myExpensesNet, totalMyExpensesSub);
       renderDebtsList('activeDebtsList', clientActiveDebts, 'text-neonYellow', '-');
       renderDebtsList('repaidDebtsList', clientRepaidDebts, 'text-emerald-400', '+');
       renderCategoryCards(categories);
       renderTable(parsedRecordsGlobal);
       renderCharts(categories);
-
-      // Оновлюємо компактну теплову карту
       renderInteractiveHeatmap();
     }
 
-    function renderMyExpensesUI(total) {
+    function renderMyExpensesUI(total, totalExpensesSub) {
       document.getElementById('myTotalDisplay').innerText = `${total.toFixed(2)} €`;
+      document.getElementById('monthlyExpensesTotal').innerText = `-${totalExpensesSub.toFixed(2)} €`;
+
       const container = document.getElementById('myExpensesList');
       if (myExpenses.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-[11px]">Записи відсутні</p>';
@@ -711,7 +871,7 @@
             <span class="text-[9px] text-gray-500 block">${item.time}</span>
           </div>
           <div class="flex items-center gap-1.5 shrink-0">
-            <span class="font-bold ${item.amount >= 0 ? 'text-emerald-400' : 'text-red-400'}">${item.amount >= 0 ? '+' : ''}${item.amount} €</span>
+            <span class="font-bold ${item.amount >= 0 ? 'text-emerald-400' : 'text-red-400'}">${item.amount >= 0 ? '+' : ''}${item.amount.toFixed(2)} €</span>
             <button onclick="removeMyExpense(${item.id})" class="text-gray-500 hover:text-red-400 font-bold px-1">×</button>
           </div>
         </div>
@@ -752,12 +912,12 @@
                 <p class="font-bold text-white">${cat.eurPaid.toFixed(2)} €</p>
               </div>
               <div>
-                <p class="text-[10px] text-gray-400">Чистий прибуток</p>
-                <p class="font-bold text-neonGreen">${cat.netProfit.toFixed(2)} €</p>
+                <p class="text-[10px] text-neonGreen font-medium">Очікувана виручка</p>
+                <p class="font-bold text-neonGreen">${cat.expectedRevenue ? cat.expectedRevenue.toFixed(2) : '0.00'} €</p>
               </div>
               <div>
-                <p class="text-[10px] text-gray-400">Точна вага</p>
-                <p class="font-bold text-gray-200">${cat.exactGramm.toFixed(2)} г</p>
+                <p class="text-[10px] text-gray-400">Чистий прибуток</p>
+                <p class="font-bold text-neonBlue">${cat.netProfit.toFixed(2)} €</p>
               </div>
               <div>
                 <p class="text-[10px] text-gray-400">Собівартість</p>
@@ -772,7 +932,7 @@
     function renderTable(records) {
       const tbody = document.getElementById('recordsTableBody');
       if (records.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-gray-500">Записи відсутні</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" class="p-4 text-center text-gray-500">Записи відсутні</td></tr>';
         return;
       }
 
@@ -789,10 +949,15 @@
             <td class="p-3 font-mono text-gray-400">${r.baseGramm.toFixed(2)} г</td>
             <td class="p-3 font-mono font-bold text-neonGreen">${r.exactGramm.toFixed(2)} г</td>
             <td class="p-3 font-mono font-bold text-white">${r.eurPaid.toFixed(2)} €</td>
+            <td class="p-3 font-mono text-neonRed">${r.dealCost ? r.dealCost.toFixed(2) : '0.00'} €</td>
+            <td class="p-3 font-mono font-bold text-neonBlue">${r.dealProfit ? r.dealProfit.toFixed(2) : '0.00'} €</td>
             <td class="p-3 font-mono text-[11px] ${r.debtNew > 0 ? 'text-neonYellow' : r.debtRepaid > 0 ? 'text-emerald-400' : 'text-gray-500'}">
               ${r.rawDebtText || '-'}
             </td>
             <td class="p-3 font-mono text-gray-400 text-[11px]">${r.timeStr}</td>
+            <td class="p-3 text-center">
+              <button onclick="removeRecord('${r.id}')" class="text-gray-500 hover:text-red-400 font-bold px-2 py-1">×</button>
+            </td>
           </tr>
         `;
       }).join('');
@@ -862,7 +1027,6 @@
       });
     }
 
-    // НАВІГАЦІЯ ТА УЛЬТРАКОМПАКТНА ТЕПЛОВА КАРТА (COMPACT HEATMAP)
     function shiftWeek(offset) {
       selectedWeekStart.setDate(selectedWeekStart.getDate() + (offset * 7));
       renderInteractiveHeatmap();
@@ -888,11 +1052,9 @@
       const formatDateShort = (d) => `${String(d.getDate()).padStart(2,'0')}.${String(d.getMonth()+1).padStart(2,'0')}`;
       document.getElementById('heatmapPeriodText').innerText = `${formatDateShort(selectedWeekStart)} — ${formatDateShort(weekEnd)}`;
 
-      // Ініціалізація матриці 7х24
       const matrix = Array(7).fill(0).map(() => Array(24).fill(0));
       let maxDealsInHour = 0;
 
-      // Наповнення даними з журналів
       parsedRecordsGlobal.forEach(r => {
         if (!r.parsedDateObj) return;
         const d = r.parsedDateObj;
@@ -931,11 +1093,9 @@
         dayLabel.innerHTML = `<span>${daysNames[dayIdx]}</span><span class="text-[8px] text-gray-500">${String(rowDate.getDate()).padStart(2,'0')}</span>`;
         rowDiv.appendChild(dayLabel);
 
-        // 24 ультракомпактні комірки
         for (let h = 0; h < 24; h++) {
           const count = matrix[dayIdx][h];
           const cell = document.createElement('div');
-
           const isNow = isToday && h === currentHour;
 
           let bgStyle = 'background-color: #0D111A; border: 1px solid rgba(26, 33, 51, 0.6);';
@@ -953,13 +1113,11 @@
           cell.className = `hm-cell h-5 rounded-[3px] flex items-center justify-center text-[9px] font-mono font-bold cursor-pointer ${isNow ? 'hm-current-time' : ''}`;
           cell.style = bgStyle;
 
-          // Відображаємо кількість тільки якщо > 0 для збереження чистоти інтерфейсу
           if (count > 0) {
             cell.innerHTML = `<span class="${count / (maxDealsInHour || 1) > 0.66 ? 'text-black' : 'text-emerald-100'}">${count}</span>`;
           }
 
           cell.title = `📅 ${daysNames[dayIdx]}, ${formatDateShort(rowDate)}\n⏰ Час: ${String(h).padStart(2,'0')}:00 - ${String(h).padStart(2,'0')}:59\n📊 Кількість угод: ${count}`;
-
           rowDiv.appendChild(cell);
         }
 
@@ -967,47 +1125,9 @@
       }
     }
 
-    function loadSampleData() {
-      const sample = `BANNAN
-Name
-Gramm
-€
-Time
-01.08.2025
-
-Олексій
-10,0
-100
-14:30
-
-Дмитро
-5.0
-50
-15:15
-
-SKITTLES
-Name
-Gramm
-€
-Time
-01.08.2025
-
-Іван
-20.0
-200
-14:45
-
-Олексій
-15.0
-150 долг -50
-18:20`;
-
-      document.getElementById('rawInput').value = sample;
-      processData();
-    }
-
-    loadMyExpenses();
-    loadSampleData();
+    initTelegramAuth();
+    loadUserData();
+    processData();
   </script>
 </body>
 </html>
