@@ -32,16 +32,53 @@
   </script>
 
   <style>
-    :root {
-      --glass-bg: rgba(18, 21, 31, 0.55);
-      --glass-border: rgba(255, 255, 255, 0.10);
-      --glass-highlight: rgba(255, 255, 255, 0.18);
+    /* ===== THEME TOKENS (dark default) ===== */
+    :root, html.dark {
+      --glass-bg: rgba(18, 21, 31, 0.72);
+      --glass-border: rgba(255, 255, 255, 0.12);
+      --glass-highlight: rgba(255, 255, 255, 0.16);
       --bg-base: #0B0D12;
+      --bg-elevated: #12151F;
       --text-main: #F1F5F9;
+      --text-muted: #94A3B8;
+      --text-faint: #64748B;
       --accent: #34D399;
       --accent-2: #38BDF8;
       --accent-3: #A78BFA;
       --danger: #FB7185;
+      --warn: #FBBF24;
+      --chart-grid: #1A2133;
+      --input-bg: rgba(0, 0, 0, 0.35);
+      --chip-bg: rgba(0, 0, 0, 0.28);
+      --overlay-grad:
+        radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.16), transparent 55%),
+        radial-gradient(900px 500px at 90% 0%, rgba(167, 139, 250, 0.14), transparent 50%),
+        radial-gradient(700px 400px at 50% 110%, rgba(52, 211, 153, 0.10), transparent 50%),
+        linear-gradient(180deg, #0B0D12 0%, #0E1118 100%);
+    }
+
+    /* ===== LIGHT THEME — high contrast, modern, readable on iPhone ===== */
+    html.light {
+      --glass-bg: #FFFFFF;
+      --glass-border: rgba(15, 23, 42, 0.12);
+      --glass-highlight: rgba(255, 255, 255, 1);
+      --bg-base: #EEF2F7;
+      --bg-elevated: #FFFFFF;
+      --text-main: #0B1220;
+      --text-muted: #334155;
+      --text-faint: #475569;
+      --accent: #047857;
+      --accent-2: #0369A1;
+      --accent-3: #6D28D9;
+      --danger: #BE123C;
+      --warn: #B45309;
+      --chart-grid: #CBD5E1;
+      --input-bg: #F8FAFC;
+      --chip-bg: #F1F5F9;
+      --overlay-grad:
+        radial-gradient(900px 480px at 8% -8%, rgba(3, 105, 161, 0.08), transparent 55%),
+        radial-gradient(700px 400px at 92% 0%, rgba(109, 40, 217, 0.06), transparent 50%),
+        linear-gradient(180deg, #F8FAFC 0%, #EEF2F7 100%);
     }
 
     html, body {
@@ -62,12 +99,95 @@
       position: fixed;
       inset: 0;
       z-index: -1;
-      background:
-        radial-gradient(1200px 600px at 10% -10%, rgba(56, 189, 248, 0.18), transparent 55%),
-        radial-gradient(900px 500px at 90% 0%, rgba(167, 139, 250, 0.16), transparent 50%),
-        radial-gradient(700px 400px at 50% 110%, rgba(52, 211, 153, 0.10), transparent 50%),
-        linear-gradient(180deg, #0B0D12 0%, #0E1118 100%);
+      background: var(--overlay-grad);
       pointer-events: none;
+    }
+
+    /* Light: solid cards, high-contrast text (no washed-out gray) */
+    html.light .glass, html.light .neon-border, html.light .neon-border-purple,
+    html.light .neon-border-blue, html.light .neon-border-red, html.light .bg-brandCard\/90 {
+      background: #FFFFFF !important;
+      border: 1px solid rgba(15, 23, 42, 0.12) !important;
+      box-shadow: 0 4px 24px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04) !important;
+      backdrop-filter: none !important;
+      -webkit-backdrop-filter: none !important;
+    }
+    html.light .text-gray-200 { color: #0F172A !important; }
+    html.light .text-gray-300 { color: #1E293B !important; }
+    html.light .text-gray-400 { color: #334155 !important; }
+    html.light .text-gray-500 { color: #475569 !important; }
+    html.light .text-gray-600 { color: #475569 !important; }
+    html.light .text-white { color: #0B1220 !important; }
+    html.light .text-neonGreen { color: #047857 !important; }
+    html.light .text-neonBlue { color: #0369A1 !important; }
+    html.light .text-neonPurple { color: #6D28D9 !important; }
+    html.light .text-neonRed { color: #BE123C !important; }
+    html.light .text-neonYellow { color: #B45309 !important; }
+    html.light .text-emerald-400 { color: #047857 !important; }
+    html.light .font-black, html.light .font-bold { -webkit-font-smoothing: antialiased; }
+    html.light .bg-black\/25, html.light .bg-black\/30 {
+      background-color: #F1F5F9 !important;
+    }
+    html.light .bg-brandDark { background-color: #F8FAFC !important; }
+    html.light .border-white\/10 { border-color: rgba(15, 23, 42, 0.12) !important; }
+    html.light .border-brandBorder,
+    html.light .border-brandBorder\/40,
+    html.light .border-brandBorder\/50,
+    html.light .border-brandBorder\/60 {
+      border-color: rgba(15, 23, 42, 0.14) !important;
+    }
+    html.light input, html.light select, html.light textarea {
+      background-color: #F8FAFC !important;
+      color: #0B1220 !important;
+      border: 1px solid rgba(15, 23, 42, 0.16) !important;
+    }
+    html.light input::placeholder, html.light textarea::placeholder {
+      color: #64748B !important;
+      opacity: 1;
+    }
+    html.light .tab-bar {
+      background: #FFFFFF !important;
+      border-color: rgba(15, 23, 42, 0.12) !important;
+      box-shadow: 0 1px 3px rgba(15, 23, 42, 0.06) !important;
+    }
+    html.light .tab-btn { color: #475569 !important; }
+    html.light .tab-btn.active {
+      background: #ECFDF5 !important;
+      color: #047857 !important;
+      border: 1px solid #A7F3D0 !important;
+      box-shadow: none !important;
+    }
+    html.light .tab-btn:not(.active):hover { color: #0F172A !important; }
+    html.light .pay-toggle {
+      background: #F1F5F9 !important;
+      border-color: rgba(15, 23, 42, 0.12) !important;
+    }
+    html.light .pay-toggle button { color: #475569 !important; }
+    html.light .pay-toggle button.active-cash {
+      background: #ECFDF5 !important;
+      color: #047857 !important;
+      border-color: #A7F3D0 !important;
+    }
+    html.light .pay-toggle button.active-card {
+      background: #E0F2FE !important;
+      color: #0369A1 !important;
+      border-color: #7DD3FC !important;
+    }
+    html.light .exp-chip {
+      background: #F8FAFC !important;
+      color: #0F172A !important;
+      border-color: rgba(15, 23, 42, 0.14) !important;
+    }
+    html.light .exp-chip.active, html.light .exp-chip:hover {
+      background: #FFF1F2 !important;
+      color: #BE123C !important;
+      border-color: #FECDD3 !important;
+    }
+    html.light table thead { color: #334155 !important; }
+    html.light .tech-backdrop {
+      background: #ECFDF5 !important;
+      border-color: #A7F3D0 !important;
+      color: #047857 !important;
     }
 
     input, select, textarea { font-size: 16px !important; }
@@ -187,15 +307,38 @@
       padding: 0.45rem 0.75rem;
       font-size: 11px;
       font-weight: 700;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(0,0,0,0.28);
-      color: #E2E8F0;
+      border: 1px solid var(--glass-border);
+      background: var(--chip-bg);
+      color: var(--text-main);
       transition: all 0.18s ease;
     }
     .exp-chip:hover, .exp-chip.active {
       border-color: rgba(251, 113, 133, 0.45);
       background: rgba(251, 113, 133, 0.15);
-      color: #FDA4AF;
+      color: var(--danger);
+    }
+
+    /* Readable chart / table labels on both themes */
+    .chart-wrap {
+      position: relative;
+      width: 100%;
+      min-height: 11rem;
+      height: clamp(11rem, 32vw, 16rem);
+    }
+    @media (min-width: 768px) {
+      .chart-wrap { height: clamp(13rem, 22vw, 18rem); }
+    }
+    .kpi-label {
+      font-size: 10px;
+      line-height: 1.2;
+      letter-spacing: 0.02em;
+      color: var(--text-muted);
+    }
+    .kpi-value {
+      font-size: clamp(0.85rem, 2.6vw, 1.05rem);
+      font-weight: 800;
+      line-height: 1.15;
+      word-break: break-word;
     }
   </style>
 </head>
@@ -391,12 +534,12 @@
           <!-- Charts Grid -->
           <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
             <div class="bg-brandCard/90 p-4 rounded-2xl neon-border">
-              <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Вага / розхід</h3>
-              <div class="h-44 relative"><canvas id="weightBarChart"></canvas></div>
+              <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Вага / розхід · щипок = zoom</h3>
+              <div class="chart-wrap"><canvas id="weightBarChart"></canvas></div>
             </div>
             <div class="bg-brandCard/90 p-4 rounded-2xl neon-border">
-              <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Виручка / маржа</h3>
-              <div class="h-44 relative"><canvas id="revenuePieChart"></canvas></div>
+              <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Виручка по сортах</h3>
+              <div class="chart-wrap"><canvas id="revenuePieChart"></canvas></div>
             </div>
           </div>
 
@@ -553,13 +696,20 @@
           <p class="text-xs text-gray-400">Фільтр періоду</p>
         </div>
 
-        <div class="flex flex-wrap gap-1.5 bg-brandDark p-1.5 rounded-xl border border-brandBorder font-mono text-xs">
-          <button onclick="setArchivePeriod('today')" id="periodBtn_today" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Сьогодні</button>
-          <button onclick="setArchivePeriod('day')" id="periodBtn_day" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">День</button>
-          <button onclick="setArchivePeriod('week')" id="periodBtn_week" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Тиждень</button>
-          <button onclick="setArchivePeriod('month')" id="periodBtn_month" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Місяць</button>
-          <button onclick="setArchivePeriod('year')" id="periodBtn_year" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Рік</button>
-          <button onclick="setArchivePeriod('all')" id="periodBtn_all" class="px-3 py-1.5 rounded-lg bg-neonGreen/20 text-neonGreen border border-neonGreen/40 font-bold">Весь час</button>
+        <div class="flex flex-wrap items-center gap-2">
+          <div class="flex flex-wrap gap-1.5 bg-brandDark p-1.5 rounded-xl border border-brandBorder font-mono text-xs">
+            <button onclick="setArchivePeriod('today')" id="periodBtn_today" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Сьогодні</button>
+            <button onclick="setArchivePeriod('3days')" id="periodBtn_3days" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">3 дні</button>
+            <button onclick="setArchivePeriod('week')" id="periodBtn_week" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Тиждень</button>
+            <button onclick="setArchivePeriod('month')" id="periodBtn_month" class="px-3 py-1.5 rounded-lg text-gray-300 hover:text-white transition">Місяць</button>
+            <button onclick="setArchivePeriod('all')" id="periodBtn_all" class="px-3 py-1.5 rounded-lg bg-neonGreen/20 text-neonGreen border border-neonGreen/40 font-bold">Весь час</button>
+          </div>
+          <div class="flex items-center gap-1.5 bg-brandDark px-2 py-1.5 rounded-xl border border-brandBorder">
+            <span class="text-[10px] text-gray-500 uppercase tracking-wider">Сорт</span>
+            <select id="archiveCategoryFilter" onchange="onArchiveCategoryFilterChange()" class="bg-transparent text-xs text-neonGreen font-bold focus:outline-none cursor-pointer min-w-[7rem]">
+              <option value="ALL">Усі категорії</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -683,19 +833,29 @@
       <!-- Графіки архіву -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border">
-          <h3 class="text-xs font-bold text-gray-300 uppercase mb-3 flex items-center justify-between">
-            <span>📈 Виручка / прибуток</span>
-            <span class="text-[10px] font-mono text-neonGreen" id="archChartPeriodLabel">За весь час</span>
+          <h3 class="text-xs font-bold text-gray-300 uppercase mb-3 flex items-center justify-between gap-2">
+            <span>📈 Виручка / прибуток · щипок = zoom</span>
+            <span class="text-[10px] font-mono text-neonGreen shrink-0" id="archChartPeriodLabel">Весь час</span>
           </h3>
-          <div class="h-56 relative"><canvas id="archiveTimeChart"></canvas></div>
+          <div class="chart-wrap" style="height:14rem"><canvas id="archiveTimeChart"></canvas></div>
+        </div>
+
+        <!-- Динаміка прибутку: день + накопичення -->
+        <div class="bg-brandCard/90 p-4 rounded-2xl neon-border-blue">
+          <h3 class="text-xs font-bold text-gray-300 uppercase mb-1 flex items-center justify-between gap-2">
+            <span>💹 Динаміка прибутку · щипок = zoom</span>
+            <span class="text-[10px] font-mono text-neonBlue shrink-0" id="archProfitDynLabel">—</span>
+          </h3>
+          <p class="text-[10px] text-gray-500 mb-2">Стовпчики = прибуток за день · лінія = накопичений прибуток</p>
+          <div class="chart-wrap" style="height:14rem"><canvas id="archiveProfitDynamicsChart"></canvas></div>
         </div>
 
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border-blue">
           <h3 class="text-xs font-bold text-gray-300 uppercase mb-3 flex items-center justify-between">
-            <span>📊 Порівняння періодів</span>
-            <span class="text-[10px] font-mono text-neonBlue">Порівняння</span>
+            <span>📊 Порівняння сортів</span>
+            <span class="text-[10px] font-mono text-neonBlue">Виручка / прибуток</span>
           </h3>
-          <div class="h-56 relative"><canvas id="archivePeriodComparisonChart"></canvas></div>
+          <div class="chart-wrap" style="height:14rem"><canvas id="archivePeriodComparisonChart"></canvas></div>
         </div>
 
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border-purple">
@@ -732,8 +892,8 @@
           </div>
           
           <div class="flex items-center gap-2 flex-wrap">
-            <select id="archiveVarietyFilter" onchange="filterArchiveMasterTable()" class="px-2.5 py-1.5 bg-brandDark rounded-lg border border-brandBorder text-xs text-neonGreen focus:outline-none">
-              <option value="ALL">Всі сорти</option>
+            <select id="archiveVarietyFilter" onchange="onArchiveCategoryFilterChange()" class="px-2.5 py-1.5 bg-brandDark rounded-lg border border-brandBorder text-xs text-neonGreen focus:outline-none" title="Фільтр категорії (синхрон зверху)">
+              <option value="ALL">Усі категорії</option>
             </select>
 
             <input type="text" id="archiveSearch" onkeyup="filterArchiveMasterTable()" placeholder="Пошук в архіві..." class="px-3 py-1.5 bg-brandDark rounded-lg border border-brandBorder text-xs text-gray-200 focus:outline-none">
@@ -898,13 +1058,23 @@
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border">
-          <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Витрати в часі · щипок = zoom</h3>
-          <div class="h-52 relative"><canvas id="expenseTimeChart"></canvas></div>
+          <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Витрати в часі</h3>
+          <div class="chart-wrap"><canvas id="expenseTimeChart"></canvas></div>
         </div>
         <div class="bg-brandCard/90 p-4 rounded-2xl neon-border-purple">
           <h3 class="text-xs font-bold text-gray-300 uppercase mb-2">Чистий дохід: готівка vs карта</h3>
-          <div class="h-52 relative"><canvas id="expenseMethodChart"></canvas></div>
+          <div class="chart-wrap"><canvas id="expenseMethodChart"></canvas></div>
         </div>
+      </div>
+
+      <!-- Витрати за місяць -->
+      <div class="bg-brandCard/90 p-4 rounded-2xl neon-border-red">
+        <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+          <h3 class="text-xs font-bold text-gray-300 uppercase">📅 Витрати за місяць</h3>
+          <span class="text-[10px] font-mono text-neonRed" id="expenseMonthChartMeta">—</span>
+        </div>
+        <p class="text-[10px] text-gray-500 mb-2">Готівка · карта · закуп сорту — по місяцях (останні 12)</p>
+        <div class="chart-wrap" style="height:15rem"><canvas id="expenseMonthChart"></canvas></div>
       </div>
     </div>
 
@@ -1167,6 +1337,12 @@
         if (tp.button_color) root.style.setProperty('--tg-theme-button-color', tp.button_color);
         if (tp.hint_color) root.style.setProperty('--tg-theme-hint-color', tp.hint_color);
         if (tp.secondary_bg_color) root.style.setProperty('--tg-theme-secondary-bg-color', tp.secondary_bg_color);
+
+        // Dark / light class for full app theme (iPhone light mode fix)
+        const scheme = (tg.colorScheme === 'light' || tg.colorScheme === 'dark')
+          ? tg.colorScheme
+          : (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+        if (typeof applyAppColorScheme === 'function') applyAppColorScheme(scheme);
       }
 
       function setupMainButton() {
@@ -1253,7 +1429,7 @@
 
     // GLOBAL STATE
     let barChart, pieChart;
-    let archTimeChart, archComparisonChart, archProfitChart, archBuyersChart;
+    let archTimeChart, archComparisonChart, archProfitChart, archBuyersChart, archProfitDynChart;
     let fcComparisonChart, fcVarietyDemandChart;
 
     // ===== BUSINESS CONSTANTS (no more magic numbers) =====
@@ -1298,11 +1474,13 @@
       return n.toFixed(chartDecimals);
     }
 
-    /** Shared Chart.js scale/tooltip options for numeric axes */
+    /** Shared Chart.js scale/tooltip options for numeric axes (theme-aware) */
     function chartNumberTickOpts() {
+      const c = typeof chartThemeColors === 'function' ? chartThemeColors() : { tick: '#94A3B8', grid: '#1A2133' };
       return {
-        color: '#94A3B8',
+        color: c.tick,
         font: { size: 10 },
+        maxTicksLimit: 6,
         callback: function (value) {
           return fmtChart(value);
         }
@@ -1320,18 +1498,22 @@
       };
     }
 
-    /** Zoom / pinch на графіках (розтягнути або стиснути шкалу) */
+    /**
+     * Zoom / pinch — ТІЛЬКИ нижня вісь (X).
+     * Вертикаль (Y) не чіпаємо: масштабується час / категорії внизу.
+     */
     function chartZoomOpts(axis) {
-      const mode = axis || 'xy';
+      // завжди X, навіть якщо викликали з 'xy' / 'y'
       return {
         zoom: {
           wheel: { enabled: true },
           pinch: { enabled: true },
-          mode
+          mode: 'x',
+          scaleMode: 'x'
         },
         pan: {
           enabled: true,
-          mode
+          mode: 'x'
         },
         limits: {
           x: { min: 'original', max: 'original' },
@@ -1353,6 +1535,7 @@
     let expenseHistoryMap = {};
     let expenseTimeChart = null;
     let expenseMethodChart = null;
+    let expenseMonthChart = null;
 
     /** Авто-категорії витрат (завжди в списку, навіть з сумою 0) */
     const DEFAULT_EXPENSE_CATEGORIES = [
@@ -1493,31 +1676,66 @@
       }, { passive: true });
     }
 
-    /** Sync soft glass colors with Telegram theme when available */
+    /** Dark / Light for whole app (Telegram colorScheme + system fallback) */
+    function applyAppColorScheme(scheme) {
+      const mode = scheme === 'light' ? 'light' : 'dark';
+      const root = document.documentElement;
+      root.classList.remove('dark', 'light');
+      root.classList.add(mode);
+      try {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (tg) {
+          const bg = mode === 'light' ? '#F1F5F9' : '#0B0D12';
+          if (tg.setBackgroundColor) tg.setBackgroundColor(bg);
+          if (tg.setHeaderColor) {
+            try { tg.setHeaderColor(mode === 'light' ? 'secondary_bg_color' : 'bg_color'); } catch (e) {
+              try { tg.setHeaderColor(bg); } catch (e2) {}
+            }
+          }
+        }
+      } catch (e) {}
+      // charts re-render with new tick colors when processData runs
+    }
+
+    function detectPreferredColorScheme() {
+      try {
+        const tg = window.Telegram && window.Telegram.WebApp;
+        if (tg && (tg.colorScheme === 'light' || tg.colorScheme === 'dark')) return tg.colorScheme;
+      } catch (e) {}
+      if (window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) return 'light';
+      return 'dark';
+    }
+
+    /** Sync soft glass + dark/light with Telegram / system */
     function applyTelegramThemeGlass() {
       try {
+        const scheme = detectPreferredColorScheme();
+        applyAppColorScheme(scheme);
+
         const tg = window.Telegram && window.Telegram.WebApp;
         if (!tg) return;
         tg.ready();
         tg.expand();
-        const tp = tg.themeParams || {};
-        if (tp.bg_color) {
-          document.documentElement.style.setProperty('--bg-base', tp.bg_color);
-          document.body.style.backgroundColor = tp.bg_color;
+        // Do NOT force TG bg over our theme tokens — light mode on iPhone was broken by that.
+        // Only listen for changes.
+        if (tg.onEvent) {
+          tg.onEvent('themeChanged', () => {
+            applyAppColorScheme(detectPreferredColorScheme());
+            try { if (typeof processData === 'function') processData(); } catch (e) {}
+          });
         }
-        if (tp.secondary_bg_color) {
-          // derive translucent glass from TG secondary bg
-          document.documentElement.style.setProperty('--glass-bg', tp.secondary_bg_color + '99');
-        }
-        if (tp.text_color) {
-          document.documentElement.style.setProperty('--text-main', tp.text_color);
-        }
-        if (tp.button_color) {
-          document.documentElement.style.setProperty('--accent', tp.button_color);
-        }
-        if (tg.setHeaderColor && tp.bg_color) tg.setHeaderColor(tp.bg_color);
-        if (tg.setBackgroundColor && tp.bg_color) tg.setBackgroundColor(tp.bg_color);
-      } catch (e) {}
+      } catch (e) {
+        applyAppColorScheme('dark');
+      }
+    }
+
+    function chartThemeColors() {
+      const light = document.documentElement.classList.contains('light');
+      return {
+        tick: light ? '#475569' : '#94A3B8',
+        grid: light ? '#E2E8F0' : '#1A2133',
+        legend: light ? '#334155' : '#94A3B8'
+      };
     }
 
     function loadGlobalVarieties() {
@@ -2091,9 +2309,67 @@
 
         TelegramService.cloudGet(prefix + 'expenses', (cloudExp) => {
           if (cloudExp && typeof cloudExp === 'object') {
-            customExpenseCategories = cloudExp;
-            localStorage.setItem(`h2_expenses_${currentUser}`, JSON.stringify(cloudExp));
+            // legacy map — лише для сумісності; основне джерело = exp_current
+            customExpenseCategories = { ...customExpenseCategories, ...cloudExp };
+            localStorage.setItem(`h2_expenses_${currentUser}`, JSON.stringify(customExpenseCategories));
+            // підтягнути в expenseCurrentMap якщо локально пусто по цій назві
+            Object.keys(cloudExp).forEach(k => {
+              if (String(k).includes('::')) return;
+              const amt = Number(cloudExp[k]) || 0;
+              if (amt <= 0) return;
+              const key = expenseKey(k, 'cash');
+              if (!expenseCurrentMap[key] || (Number(expenseCurrentMap[key].amount) || 0) === 0) {
+                expenseCurrentMap[key] = {
+                  name: k, amount: amt, method: 'cash',
+                  updatedAt: new Date().toISOString(), auto: isDefaultExpenseName(k)
+                };
+              }
+            });
+            rebuildLegacyExpenseCategories();
+            localStorage.setItem(`h2_exp_current_${currentUser}`, JSON.stringify(expenseCurrentMap));
             renderExpenseCategories();
+            if (activePage === 'page3') renderExpensesView();
+            processData();
+          }
+        });
+
+        // Повні витрати по акаунту (готівка/карта окремо) + історія
+        TelegramService.cloudGet(prefix + 'exp_current', (cloudCur) => {
+          if (cloudCur && typeof cloudCur === 'object') {
+            const merged = { ...expenseCurrentMap };
+            Object.keys(cloudCur).forEach(k => {
+              const remote = cloudCur[k];
+              if (!remote) return;
+              const local = merged[k];
+              const rAmt = Number(remote.amount) || 0;
+              const lAmt = local ? (Number(local.amount) || 0) : 0;
+              const rTs = remote.updatedAt ? Date.parse(remote.updatedAt) : 0;
+              const lTs = local && local.updatedAt ? Date.parse(local.updatedAt) : 0;
+              // беремо свіжіший / більший осмислений запис
+              if (!local || rTs >= lTs || (rAmt > 0 && lAmt === 0)) {
+                merged[k] = {
+                  name: remote.name || parseExpenseKey(k).name,
+                  amount: rAmt,
+                  method: remote.method || parseExpenseKey(k).method,
+                  updatedAt: remote.updatedAt || null,
+                  auto: !!remote.auto
+                };
+              }
+            });
+            expenseCurrentMap = merged;
+            migrateExpenseKeysToMethodSplit();
+            ensureDefaultExpenseCategories();
+            localStorage.setItem(`h2_exp_current_${currentUser}`, JSON.stringify(expenseCurrentMap));
+            if (activePage === 'page3') renderExpensesView();
+            processData();
+          }
+        });
+
+        TelegramService.cloudGet(prefix + 'exp_history', (cloudHist) => {
+          if (cloudHist && typeof cloudHist === 'object') {
+            expenseHistoryMap = { ...expenseHistoryMap, ...cloudHist };
+            localStorage.setItem(`h2_exp_history_${currentUser}`, JSON.stringify(expenseHistoryMap));
+            if (activePage === 'page3') renderExpensesView();
           }
         });
 
@@ -2134,23 +2410,34 @@
     }
 
     function saveUserData() {
-      // Save current journal + permanent archive separately
-      localStorage.setItem(`h2_records_${currentUser}`, JSON.stringify(storedRecordsMap));
-      localStorage.setItem(`h2_archive_${currentUser}`, JSON.stringify(archiveRecordsMap));
-      localStorage.setItem(`h2_expenses_${currentUser}`, JSON.stringify(customExpenseCategories));
-      localStorage.setItem(`h2_purchases_${currentUser}`, JSON.stringify(purchaseRecordsMap));
-      localStorage.setItem(`h2_exp_current_${currentUser}`, JSON.stringify(expenseCurrentMap));
-      localStorage.setItem(`h2_exp_history_${currentUser}`, JSON.stringify(expenseHistoryMap));
-      const rawEl = document.getElementById('rawInput');
-      if (rawEl) localStorage.setItem(`h2_raw_logs_${currentUser}`, rawEl.value);
+      // Ключі завжди з currentUser = tg_<id> → окремий акаунт Telegram
+      try {
+        localStorage.setItem(`h2_records_${currentUser}`, JSON.stringify(storedRecordsMap || {}));
+        localStorage.setItem(`h2_archive_${currentUser}`, JSON.stringify(archiveRecordsMap || {}));
+        localStorage.setItem(`h2_expenses_${currentUser}`, JSON.stringify(customExpenseCategories || {}));
+        localStorage.setItem(`h2_purchases_${currentUser}`, JSON.stringify(purchaseRecordsMap || {}));
+        localStorage.setItem(`h2_exp_current_${currentUser}`, JSON.stringify(expenseCurrentMap || {}));
+        localStorage.setItem(`h2_exp_history_${currentUser}`, JSON.stringify(expenseHistoryMap || {}));
+        const rawEl = document.getElementById('rawInput');
+        if (rawEl) localStorage.setItem(`h2_raw_logs_${currentUser}`, rawEl.value);
+      } catch (e) {
+        console.warn('localStorage save failed', e);
+      }
 
       if (typeof TelegramService !== 'undefined' && TelegramService.isInsideTelegram()) {
         const prefix = `h2_${currentUser}_`;
-        TelegramService.cloudSet(prefix + 'records', storedRecordsMap);
-        TelegramService.cloudSet(prefix + 'archive', archiveRecordsMap);
-        TelegramService.cloudSet(prefix + 'expenses', customExpenseCategories);
-        TelegramService.cloudSet(prefix + 'purchases', purchaseRecordsMap);
-        TelegramService.cloudSet(prefix + 'raw', document.getElementById('rawInput').value);
+        try {
+          TelegramService.cloudSet(prefix + 'records', storedRecordsMap || {});
+          TelegramService.cloudSet(prefix + 'archive', archiveRecordsMap || {});
+          TelegramService.cloudSet(prefix + 'expenses', customExpenseCategories || {});
+          TelegramService.cloudSet(prefix + 'exp_current', expenseCurrentMap || {});
+          TelegramService.cloudSet(prefix + 'exp_history', expenseHistoryMap || {});
+          TelegramService.cloudSet(prefix + 'purchases', purchaseRecordsMap || {});
+          const rawEl2 = document.getElementById('rawInput');
+          TelegramService.cloudSet(prefix + 'raw', rawEl2 ? rawEl2.value : '');
+        } catch (e) {
+          console.warn('cloud save failed', e);
+        }
       }
     }
 
@@ -3144,6 +3431,7 @@
       try {
         if (expenseTimeChart) { expenseTimeChart.destroy(); expenseTimeChart = null; }
         if (expenseMethodChart) { expenseMethodChart.destroy(); expenseMethodChart = null; }
+        if (expenseMonthChart) { expenseMonthChart.destroy(); expenseMonthChart = null; }
       } catch (e) {}
 
       const hist = Object.values(expenseHistoryMap || {}).slice().sort((a, b) => {
@@ -3159,7 +3447,6 @@
         if (!byDay[key]) byDay[key] = { delta: 0, sort: d.getTime() };
         byDay[key].delta += Number(h.delta) || 0;
       });
-      // also show current snapshot levels as bars of absolute amounts? better: running total of current sum over time
       let run = 0;
       const labels = Object.keys(byDay).sort((a,b) => byDay[a].sort - byDay[b].sort);
       const series = labels.map(k => { run += byDay[k].delta; return run; });
@@ -3183,12 +3470,11 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { labels: { color: '#94A3B8', font: { size: 10 } } },
-              zoom: chartZoomOpts('x')
+              legend: { labels: { color: chartThemeColors().legend, font: { size: 10 } } }
             },
             scales: {
-              x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
-              y: { ticks: chartNumberTickOpts(), grid: { color: '#1A2133' } }
+              x: { ticks: { color: chartThemeColors().tick, font: { size: 10 } }, grid: { display: false } },
+              y: { ticks: chartNumberTickOpts(), grid: { color: chartThemeColors().grid } }
             }
           }
         });
@@ -3229,16 +3515,160 @@
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-              legend: { labels: { color: '#94A3B8', font: { size: 10 } } },
-              zoom: chartZoomOpts('y')
+              legend: { labels: { color: chartThemeColors().legend, font: { size: 10 } } }
             },
             scales: {
-              x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
-              y: { ticks: chartNumberTickOpts(), grid: { color: '#1A2133' } }
+              x: { ticks: { color: chartThemeColors().tick, font: { size: 10 } }, grid: { display: false } },
+              y: { ticks: chartNumberTickOpts(), grid: { color: chartThemeColors().grid } }
             }
           }
         });
       }
+
+      // ===== Витрати за місяць (останні 12 місяців) =====
+      renderExpenseMonthChart(hist);
+    }
+
+    function monthKeyFromDate(d) {
+      return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`;
+    }
+
+    function monthLabelFromKey(key) {
+      const [y, m] = key.split('-');
+      const names = ['Січ', 'Лют', 'Бер', 'Кві', 'Тра', 'Чер', 'Лип', 'Сер', 'Вер', 'Жов', 'Лис', 'Гру'];
+      const mi = parseInt(m, 10) - 1;
+      return `${names[mi] || m} ${String(y).slice(2)}`;
+    }
+
+    function renderExpenseMonthChart(hist) {
+      const c3 = document.getElementById('expenseMonthChart');
+      if (!c3) return;
+
+      const now = new Date();
+      // останні 12 місяців включно з поточним
+      const monthKeys = [];
+      for (let i = 11; i >= 0; i--) {
+        const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+        monthKeys.push(monthKeyFromDate(d));
+      }
+
+      const byMonth = {};
+      monthKeys.forEach(k => { byMonth[k] = { cash: 0, card: 0, purchase: 0 }; });
+
+      // історія змін: додатні delta = витрати цього місяця
+      (hist || []).forEach(h => {
+        const d = h.createdAt ? new Date(h.createdAt) : parseRecordDateTime(h.timeStr || '');
+        if (!(d instanceof Date) || isNaN(d.getTime())) return;
+        const key = monthKeyFromDate(d);
+        if (!byMonth[key]) return;
+        const delta = Number(h.delta);
+        if (!isFinite(delta) || delta === 0) return;
+        // лише зростання витрат рахуємо як «витратили в цьому місяці»
+        const add = delta > 0 ? delta : 0;
+        if ((h.method || 'cash') === 'card') byMonth[key].card += add;
+        else byMonth[key].cash += add;
+      });
+
+      // закуп сорту по місяцях
+      Object.values(purchaseRecordsMap || {}).forEach(p => {
+        let d = p.parsedDateObj;
+        if (!(d instanceof Date) || isNaN(d.getTime())) d = parseRecordDateTime(p.timeStr || '');
+        if (!(d instanceof Date) || isNaN(d.getTime())) {
+          if (p.createdAt) d = new Date(p.createdAt);
+        }
+        if (!(d instanceof Date) || isNaN(d.getTime())) return;
+        const key = monthKeyFromDate(d);
+        if (!byMonth[key]) return;
+        byMonth[key].purchase += Number(p.totalCost) || 0;
+      });
+
+      // якщо історії майже немає — показати поточні витрати в поточному місяці
+      const curKey = monthKeyFromDate(now);
+      const histHasData = (hist || []).some(h => (Number(h.delta) || 0) > 0);
+      if (!histHasData && byMonth[curKey]) {
+        Object.values(expenseCurrentMap || {}).forEach(e => {
+          const a = Number(e.amount) || 0;
+          if (a <= 0) return;
+          if ((e.method || 'cash') === 'card') byMonth[curKey].card += a;
+          else byMonth[curKey].cash += a;
+        });
+        // purchase already from map; getExpenseTotals adds purchase to cash — не дублюємо тут
+      }
+
+      const labels = monthKeys.map(monthLabelFromKey);
+      const cashData = monthKeys.map(k => byMonth[k].cash);
+      const cardData = monthKeys.map(k => byMonth[k].card);
+      const purData = monthKeys.map(k => byMonth[k].purchase);
+      const totalAll = cashData.reduce((a, b) => a + b, 0)
+        + cardData.reduce((a, b) => a + b, 0)
+        + purData.reduce((a, b) => a + b, 0);
+
+      const meta = document.getElementById('expenseMonthChartMeta');
+      if (meta) meta.innerText = `12 міс · Σ ${totalAll.toFixed(0)} €`;
+
+      expenseMonthChart = new Chart(c3.getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            {
+              label: 'Готівка',
+              data: cashData,
+              backgroundColor: 'rgba(52, 211, 153, 0.65)',
+              borderRadius: 4,
+              stack: 'exp'
+            },
+            {
+              label: 'Карта',
+              data: cardData,
+              backgroundColor: 'rgba(56, 189, 248, 0.65)',
+              borderRadius: 4,
+              stack: 'exp'
+            },
+            {
+              label: 'Закуп',
+              data: purData,
+              backgroundColor: 'rgba(251, 191, 36, 0.7)',
+              borderRadius: 4,
+              stack: 'exp'
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          interaction: { mode: 'index', intersect: false },
+          plugins: {
+            legend: {
+              labels: { color: chartThemeColors().legend, font: { size: 10 }, boxWidth: 10, padding: 8 }
+            },
+            tooltip: {
+              callbacks: {
+                footer: function (items) {
+                  const sum = items.reduce((a, it) => a + (Number(it.parsed.y) || 0), 0);
+                  return `Разом: ${fmtChart(sum)} €`;
+                },
+                label: function (ctx) {
+                  return `${ctx.dataset.label}: ${fmtChart(ctx.parsed.y)} €`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              stacked: true,
+              ticks: { color: chartThemeColors().tick, font: { size: 9 }, maxRotation: 0, autoSkip: true },
+              grid: { display: false }
+            },
+            y: {
+              stacked: true,
+              beginAtZero: true,
+              ticks: chartNumberTickOpts(),
+              grid: { color: chartThemeColors().grid }
+            }
+          }
+        }
+      });
     }
 
     function processData() {
@@ -3837,19 +4267,35 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: { padding: { top: 4, right: 6, bottom: 2, left: 2 } },
           plugins: {
-            legend: { display: true, labels: { color: '#94A3B8', font: { size: 10 }, boxWidth: 12 } },
-            tooltip: { callbacks: chartTooltipCallbacks(' г') },
-            zoom: chartZoomOpts('xy')
+            legend: {
+              display: true,
+              labels: {
+                color: chartThemeColors().legend,
+                font: { size: 10 },
+                boxWidth: 10,
+                padding: 8
+              }
+            },
+            tooltip: { callbacks: chartTooltipCallbacks(' г') }
           },
           scales: {
-            x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
-            y: { ticks: chartNumberTickOpts(), grid: { color: '#1A2133' } }
+            x: {
+              ticks: { color: chartThemeColors().tick, font: { size: 10 }, maxRotation: 0, autoSkip: true },
+              grid: { display: false }
+            },
+            y: {
+              beginAtZero: true,
+              ticks: chartNumberTickOpts(),
+              grid: { color: chartThemeColors().grid }
+            }
           }
         }
       });
 
       const ctxPie = document.getElementById('revenuePieChart').getContext('2d');
+      const pieBorder = document.documentElement.classList.contains('light') ? '#FFFFFF' : '#0F121C';
       pieChart = new Chart(ctxPie, {
         type: 'doughnut',
         data: {
@@ -3857,15 +4303,24 @@
           datasets: [{
             data: revenues,
             backgroundColor: labels.map(c => getCategoryStyle(c).border + 'CC'),
-            borderColor: '#0F121C',
+            borderColor: pieBorder,
             borderWidth: 2
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
+          layout: { padding: 4 },
           plugins: {
-            legend: { position: 'right', labels: { color: '#94A3B8', font: { size: 10 } } },
+            legend: {
+              position: 'right',
+              labels: {
+                color: chartThemeColors().legend,
+                font: { size: 10 },
+                boxWidth: 10,
+                padding: 6
+              }
+            },
             tooltip: {
               callbacks: {
                 label: function (ctx) {
@@ -3967,10 +4422,9 @@
     function archivePeriodLabel(period) {
       const map = {
         today: 'Сьогодні',
-        day: 'Сьогодні',
-        week: 'Тиждень',
+        '3days': 'Останні 3 дні',
+        week: 'Останні 7 днів',
         month: 'Місяць',
-        year: 'Рік',
         all: 'Весь час'
       };
       return map[period] || 'Весь час';
@@ -3978,7 +4432,7 @@
 
     function setArchivePeriod(period) {
       currentArchivePeriod = period || 'all';
-      ['today', 'day', 'week', 'month', 'year', 'all'].forEach(p => {
+      ['today', '3days', 'week', 'month', 'all'].forEach(p => {
         const btn = document.getElementById(`periodBtn_${p}`);
         if (btn) {
           if (p === currentArchivePeriod) {
@@ -3990,7 +4444,6 @@
       });
       const lbl = document.getElementById('archChartPeriodLabel');
       if (lbl) lbl.innerText = archivePeriodLabel(currentArchivePeriod);
-      // Force full re-render of KPIs + 25 metrics + charts
       renderArchiveView();
     }
 
@@ -4013,50 +4466,90 @@
       });
     }
 
+    function getArchiveCategoryFilterValue() {
+      const top = document.getElementById('archiveCategoryFilter');
+      const bottom = document.getElementById('archiveVarietyFilter');
+      const v = (top && top.value) || (bottom && bottom.value) || 'ALL';
+      return v;
+    }
+
+    /** Синхрон двох селектів категорії + повний перерахунок архіву */
+    function onArchiveCategoryFilterChange(ev) {
+      const src = ev && ev.target ? ev.target : null;
+      const val = src ? src.value : getArchiveCategoryFilterValue();
+      const top = document.getElementById('archiveCategoryFilter');
+      const bottom = document.getElementById('archiveVarietyFilter');
+      if (top) top.value = val;
+      if (bottom) bottom.value = val;
+      renderArchiveView();
+    }
+
+    function populateArchiveCategoryFilters(allRecords) {
+      const cats = new Set();
+      (allRecords || []).forEach(r => {
+        if (r && r.category) cats.add(r.category);
+      });
+      // також відомі сорти з GLOBAL_VARIETIES
+      Object.keys(GLOBAL_VARIETIES || {}).forEach(k => cats.add(k));
+      const sorted = Array.from(cats).sort((a, b) => a.localeCompare(b, 'uk'));
+      const current = getArchiveCategoryFilterValue();
+
+      ['archiveCategoryFilter', 'archiveVarietyFilter'].forEach(id => {
+        const sel = document.getElementById(id);
+        if (!sel) return;
+        const keep = current && (current === 'ALL' || sorted.includes(current)) ? current : 'ALL';
+        sel.innerHTML = '<option value="ALL">Усі категорії</option>' +
+          sorted.map(c => `<option value="${c}">${c}</option>`).join('');
+        sel.value = keep;
+      });
+    }
+
     function getFilteredArchiveRecords() {
       const allArchive = getArchiveRecordsList();
       const period = currentArchivePeriod || 'all';
-      if (period === 'all') return allArchive;
 
-      // Важливо: фільтр від дати ОСТАННЬОЇ угоди в архіві, а не від «сьогодні» на годиннику.
-      // Інакше старі журнали дають 0 на «Місяць/Тиждень».
-      const anchor = getArchiveAnchorDate(allArchive);
-      const startOfDay = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate(), 0, 0, 0, 0);
-      const endOfDay = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate(), 23, 59, 59, 999);
+      let list = allArchive;
+      if (period !== 'all') {
+        // Якір = остання угода в архіві (не «годинник телефону»)
+        const anchor = getArchiveAnchorDate(allArchive);
+        const endOfDay = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate(), 23, 59, 59, 999);
+        const startOfToday = new Date(anchor.getFullYear(), anchor.getMonth(), anchor.getDate(), 0, 0, 0, 0);
 
-      let weekStart = getMonday(new Date(anchor));
-      weekStart = new Date(weekStart.getFullYear(), weekStart.getMonth(), weekStart.getDate(), 0, 0, 0, 0);
+        const start3 = new Date(startOfToday);
+        start3.setDate(start3.getDate() - 2);
 
-      const monthStart = new Date(anchor.getFullYear(), anchor.getMonth(), 1, 0, 0, 0, 0);
-      const monthEnd = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0, 23, 59, 59, 999);
-      const yearStart = new Date(anchor.getFullYear(), 0, 1, 0, 0, 0, 0);
-      const yearEnd = new Date(anchor.getFullYear(), 11, 31, 23, 59, 59, 999);
+        const start7 = new Date(startOfToday);
+        start7.setDate(start7.getDate() - 6);
 
-      return allArchive.filter(r => {
-        let d = r.parsedDateObj;
-        if (!(d instanceof Date) || isNaN(d.getTime())) {
-          d = parseRecordDateTime(r.timeStr || '');
-        }
-        if (!(d instanceof Date) || isNaN(d.getTime())) return false;
+        const monthStart = new Date(anchor.getFullYear(), anchor.getMonth(), 1, 0, 0, 0, 0);
+        const monthEnd = new Date(anchor.getFullYear(), anchor.getMonth() + 1, 0, 23, 59, 59, 999);
 
-        if (period === 'today' || period === 'day') {
-          return d >= startOfDay && d <= endOfDay;
-        }
-        if (period === 'week') {
-          return d >= weekStart && d <= endOfDay;
-        }
-        if (period === 'month') {
-          return d >= monthStart && d <= monthEnd;
-        }
-        if (period === 'year') {
-          return d >= yearStart && d <= yearEnd;
-        }
-        return true;
-      });
+        list = allArchive.filter(r => {
+          let d = r.parsedDateObj;
+          if (!(d instanceof Date) || isNaN(d.getTime())) {
+            d = parseRecordDateTime(r.timeStr || '');
+          }
+          if (!(d instanceof Date) || isNaN(d.getTime())) return false;
+
+          if (period === 'today') return d >= startOfToday && d <= endOfDay;
+          if (period === '3days') return d >= start3 && d <= endOfDay;
+          if (period === 'week') return d >= start7 && d <= endOfDay;
+          if (period === 'month') return d >= monthStart && d <= monthEnd;
+          return true;
+        });
+      }
+
+      // Фільтр за категорією (сортом)
+      const cat = getArchiveCategoryFilterValue();
+      if (cat && cat !== 'ALL') {
+        list = list.filter(r => r.category === cat);
+      }
+      return list;
     }
 
     function renderArchiveView() {
       const allArchive = getArchiveRecordsList();
+      populateArchiveCategoryFilters(allArchive);
       const records = getFilteredArchiveRecords();
       const anchor = getArchiveAnchorDate(allArchive);
       const anchorLabel = `${String(anchor.getDate()).padStart(2,'0')}.${String(anchor.getMonth()+1).padStart(2,'0')}.${anchor.getFullYear()}`;
@@ -4099,10 +4592,12 @@
           const monthEnd = new Date(a.getFullYear(), a.getMonth() + 1, 0, 23, 59, 59, 999);
           const yearStart = new Date(a.getFullYear(), 0, 1, 0, 0, 0, 0);
           const yearEnd = new Date(a.getFullYear(), 11, 31, 23, 59, 59, 999);
-          if (period === 'today' || period === 'day') return d >= startOfDay && d <= endOfDay;
-          if (period === 'week') return d >= weekStart && d <= endOfDay;
+          const start3 = new Date(startOfDay); start3.setDate(start3.getDate() - 2);
+          const start7 = new Date(startOfDay); start7.setDate(start7.getDate() - 6);
+          if (period === 'today') return d >= startOfDay && d <= endOfDay;
+          if (period === '3days') return d >= start3 && d <= endOfDay;
+          if (period === 'week') return d >= start7 && d <= endOfDay;
           if (period === 'month') return d >= monthStart && d <= monthEnd;
-          if (period === 'year') return d >= yearStart && d <= yearEnd;
           return true;
         });
       }
@@ -4186,6 +4681,7 @@
         if (archComparisonChart) { archComparisonChart.destroy(); archComparisonChart = null; }
         if (archProfitChart) { archProfitChart.destroy(); archProfitChart = null; }
         if (archBuyersChart) { archBuyersChart.destroy(); archBuyersChart = null; }
+        if (archProfitDynChart) { archProfitDynChart.destroy(); archProfitDynChart = null; }
       } catch (e) {}
 
       const list = Array.isArray(records) ? records : [];
@@ -4208,6 +4704,22 @@
       const revData = timeLabels.map(k => timeMap[k].rev);
       const profData = timeLabels.map(k => timeMap[k].prof);
 
+      // накопичений прибуток + ковзне середнє (3 дні)
+      let runProf = 0;
+      const cumProfData = profData.map(v => { runProf += v; return runProf; });
+      const ma3 = profData.map((_, i) => {
+        const from = Math.max(0, i - 2);
+        const slice = profData.slice(from, i + 1);
+        return slice.reduce((a, b) => a + b, 0) / slice.length;
+      });
+      const totalProf = runProf;
+      const dynLbl = document.getElementById('archProfitDynLabel');
+      if (dynLbl) {
+        dynLbl.innerText = list.length
+          ? `Σ ${totalProf.toFixed(0)} € · ${timeLabels.length} дн.`
+          : 'немає даних';
+      }
+
       const timeCanvas = document.getElementById('archiveTimeChart');
       if (timeCanvas) {
         archTimeChart = new Chart(timeCanvas.getContext('2d'), {
@@ -4223,10 +4735,101 @@
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 250 },
-            plugins: { legend: { labels: { color: '#94A3B8', font: { size: 10 } } } },
+            plugins: {
+              legend: { labels: { color: chartThemeColors().legend, font: { size: 10 } } },
+              zoom: chartZoomOpts('x')
+            },
             scales: {
-              x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
-              y: { ticks: chartNumberTickOpts(), grid: { color: '#1A2133' } }
+              x: { ticks: { color: chartThemeColors().tick, font: { size: 10 } }, grid: { display: false } },
+              y: { ticks: chartNumberTickOpts(), grid: { color: chartThemeColors().grid } }
+            }
+          }
+        });
+      }
+
+      // 1b. Динаміка прибутку: день (bar) + накопичення (line) + MA3
+      const dynCanvas = document.getElementById('archiveProfitDynamicsChart');
+      if (dynCanvas) {
+        const light = document.documentElement.classList.contains('light');
+        archProfitDynChart = new Chart(dynCanvas.getContext('2d'), {
+          type: 'bar',
+          data: {
+            labels: timeLabels.length ? timeLabels : ['—'],
+            datasets: [
+              {
+                type: 'bar',
+                label: 'Прибуток / день',
+                data: timeLabels.length ? profData : [0],
+                backgroundColor: (timeLabels.length ? profData : [0]).map(v =>
+                  v >= 0 ? 'rgba(52, 211, 153, 0.55)' : 'rgba(251, 113, 133, 0.55)'
+                ),
+                borderRadius: 4,
+                order: 3,
+                yAxisID: 'y'
+              },
+              {
+                type: 'line',
+                label: 'Накопичений',
+                data: timeLabels.length ? cumProfData : [0],
+                borderColor: '#A78BFA',
+                backgroundColor: 'rgba(167, 139, 250, 0.10)',
+                fill: true,
+                tension: 0.25,
+                borderWidth: 2.5,
+                pointRadius: 2,
+                order: 1,
+                yAxisID: 'y1'
+              },
+              {
+                type: 'line',
+                label: 'Сер. 3 дні',
+                data: timeLabels.length ? ma3 : [0],
+                borderColor: light ? '#B45309' : '#FBBF24',
+                borderDash: [5, 4],
+                borderWidth: 1.5,
+                pointRadius: 0,
+                tension: 0.3,
+                order: 2,
+                yAxisID: 'y'
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: { duration: 250 },
+            interaction: { mode: 'index', intersect: false },
+            plugins: {
+              legend: {
+                labels: { color: chartThemeColors().legend, font: { size: 10 }, boxWidth: 10, padding: 8 }
+              },
+              zoom: chartZoomOpts('x'),
+              tooltip: {
+                callbacks: {
+                  label: function (ctx) {
+                    const v = ctx.parsed.y;
+                    return `${ctx.dataset.label}: ${fmtChart(v)} €`;
+                  }
+                }
+              }
+            },
+            scales: {
+              x: {
+                ticks: { color: chartThemeColors().tick, font: { size: 10 }, maxRotation: 0, autoSkip: true },
+                grid: { display: false }
+              },
+              y: {
+                position: 'left',
+                title: { display: true, text: '€ / день', color: chartThemeColors().tick, font: { size: 9 } },
+                ticks: chartNumberTickOpts(),
+                grid: { color: chartThemeColors().grid }
+              },
+              y1: {
+                position: 'right',
+                title: { display: true, text: 'Σ €', color: chartThemeColors().tick, font: { size: 9 } },
+                ticks: chartNumberTickOpts(),
+                grid: { drawOnChartArea: false }
+              }
             }
           }
         });
@@ -4257,10 +4860,10 @@
             responsive: true,
             maintainAspectRatio: false,
             animation: { duration: 250 },
-            plugins: { legend: { labels: { color: '#94A3B8', font: { size: 10 } } } },
+            plugins: { legend: { labels: { color: chartThemeColors().legend, font: { size: 10 } } } },
             scales: {
-              x: { ticks: { color: '#94A3B8', font: { size: 10 } }, grid: { display: false } },
-              y: { ticks: chartNumberTickOpts(), grid: { color: '#1A2133' } }
+              x: { ticks: { color: chartThemeColors().tick, font: { size: 10 } }, grid: { display: false } },
+              y: { ticks: chartNumberTickOpts(), grid: { color: chartThemeColors().grid } }
             }
           }
         });
@@ -4341,16 +4944,7 @@
       const varieties = Object.keys(byVariety);
       document.getElementById('varietyTablesCount').innerText = `Знайдено сортів: ${varieties.length}`;
 
-      // Update Filter Options
-      const currentVal = selectFilter.value;
-      selectFilter.innerHTML = '<option value="ALL">Всі сорти</option>';
-      varieties.forEach(v => {
-        const opt = document.createElement('option');
-        opt.value = v;
-        opt.text = v;
-        selectFilter.appendChild(opt);
-      });
-      selectFilter.value = currentVal;
+      // опції категорій оновлює populateArchiveCategoryFilters у renderArchiveView
 
       if (varieties.length === 0) {
         container.innerHTML = '<p class="text-gray-500 text-xs">Немає угод в даному періоді</p>';
@@ -5554,9 +6148,21 @@
       loadChartPrecision();
       loadGlobalVarieties();
       initTelegramAuth();
+      // після auth currentUser = tg_<id> — витрати/архів лише цього акаунта
       loadUserData();
       processData();
       initPageSwipe();
+      // system theme change (Safari / desktop)
+      try {
+        if (window.matchMedia) {
+          window.matchMedia('(prefers-color-scheme: light)').addEventListener('change', () => {
+            if (!(window.Telegram && Telegram.WebApp && Telegram.WebApp.colorScheme)) {
+              applyAppColorScheme(detectPreferredColorScheme());
+              processData();
+            }
+          });
+        }
+      } catch (e) {}
     });
   </script>
 </body>
